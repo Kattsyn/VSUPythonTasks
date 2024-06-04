@@ -1,5 +1,6 @@
 class Game:
     def __init__(self, level):
+        self.level = level
         self.board = self.load_level(level)
         self.size = len(self.board)
         self.selected = None

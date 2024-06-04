@@ -1,57 +1,72 @@
 import os
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QPushButton, QWidget, QLabel, QVBoxLayout, \
-    QHBoxLayout, QMessageBox
+    QHBoxLayout, QMessageBox, QComboBox, QMenuBar, QAction, QMenu
 from PyQt5.QtCore import Qt
-import PyQt5
-
-from task5.WaggleGame.Game import Game
-
-# Установите переменную окружения для пути к плагинам Qt
-os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join(os.path.dirname(PyQt5.__file__), 'Qt', 'plugins')
-
+from Game import Game
+from RulesWindow import RulesWindow
+from SettingsWindow import SettingsWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Waggle Game')
         self.setGeometry(100, 100, 600, 600)
+        self.selected_color = "blue"
+        self.level_files = self.get_level_files()
         self.initUI()
+        self.initMenuBar()
+
+    def get_level_files(self):
+        levels_dir = 'levels'
+        return [f for f in os.listdir(levels_dir) if os.path.isfile(os.path.join(levels_dir, f))]
 
     def initUI(self):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout()
 
-        self.level_select_layout = QHBoxLayout()
-        self.level_label = QLabel("Select Level: ")
-        self.level_select_layout.addWidget(self.level_label)
-        self.level_buttons = [QPushButton(f'Level {i + 1}') for i in range(3)]
-        for button in self.level_buttons:
-            button.clicked.connect(self.load_level)
-            self.level_select_layout.addWidget(button)
-
-        self.layout.addLayout(self.level_select_layout)
-
         self.grid_layout = QGridLayout()
         self.layout.addLayout(self.grid_layout)
-
-        self.reset_button = QPushButton("Reset Level")
-        self.reset_button.clicked.connect(self.reset_level)
-        self.layout.addWidget(self.reset_button)
 
         self.central_widget.setLayout(self.layout)
         self.game = None
 
-    def load_level(self):
-        sender = self.sender()
-        level = int(sender.text().split()[-1])
+    def initMenuBar(self):
+        menubar = self.menuBar()
+
+        gameMenu = menubar.addMenu('Game')
+
+        newGameMenu = QMenu('New Game', self)
+        self.level_actions = []
+        for i, level_file in enumerate(self.level_files):
+            level_action = QAction(f'Level {i + 1}', self)
+            level_action.triggered.connect(lambda checked, level=i + 1: self.load_level(level))
+            newGameMenu.addAction(level_action)
+            self.level_actions.append(level_action)
+
+        rulesAction = QAction('Rules', self)
+        rulesAction.triggered.connect(self.show_rules)
+        settingsAction = QAction('Settings', self)
+        settingsAction.triggered.connect(self.show_settings)
+        restartAction = QAction('Restart', self)
+        restartAction.triggered.connect(self.reset_level)
+
+        gameMenu.addMenu(newGameMenu)
+        gameMenu.addAction(rulesAction)
+        gameMenu.addAction(settingsAction)
+        gameMenu.addSeparator()
+        gameMenu.addAction(restartAction)
+
+    def load_level(self, level):
         self.game = Game(level)
         self.update_board()
 
     def reset_level(self):
         if self.game:
-            self.load_level()
+            level = self.game.level
+            self.game = Game(level)
+            self.update_board()
 
     def update_board(self):
         for i in reversed(range(self.grid_layout.count())):
@@ -61,7 +76,9 @@ class MainWindow(QMainWindow):
             for j in range(self.game.size):
                 btn = QPushButton('')
                 if self.game.board[i][j] == 1:
-                    btn.setStyleSheet("background-color: blue")
+                    btn.setStyleSheet(f"background-color: {self.selected_color}")
+                    if self.game.selected and self.game.selected == (i, j):
+                        btn.setStyleSheet("background-color: grey")  # Измените цвет выделенной шашки
                 btn.clicked.connect(lambda _, x=i, y=j: self.make_move(x, y))
                 self.grid_layout.addWidget(btn, i, j)
                 btn.setFixedSize(50, 50)
@@ -73,11 +90,21 @@ class MainWindow(QMainWindow):
                 self.game.move(x1, y1, row, col)
                 if self.game.check_win():
                     QMessageBox.information(self, 'Waggle Game', 'You won!')
-            self.game.selected = None
+                self.game.selected = (row, col)  # Обновляем выделенную шашку
+            else:
+                self.game.selected = None  # Сбрасываем выделение, если ход некорректен
         else:
             if self.game.board[row][col] == 1:
                 self.game.selected = (row, col)
         self.update_board()
+
+    def show_rules(self):
+        self.rules_window = RulesWindow(self)
+        self.rules_window.show()
+
+    def show_settings(self):
+        self.settings_window = SettingsWindow(self, current_color=self.selected_color)
+        self.settings_window.show()
 
 
 if __name__ == '__main__':
