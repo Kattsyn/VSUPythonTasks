@@ -12,10 +12,10 @@ class RulesWindow(QDialog):
         layout = QVBoxLayout()
 
         self.rules_label = QLabel('''
-        Waggle Game Rules:
-        - Move pieces by jumping over others.
-        - Try to leave only one piece on the board.
-        - Use strategic moves to achieve your goal.
+        Правила игры Вогл:
+        - Перемещайте фигуры, перепрыгивая через другие.
+        - Постарайтесь оставить на доске только одну фигуру.
+        - Используйте стратегию, чтобы победить.
         ''')
         layout.addWidget(self.rules_label)
 

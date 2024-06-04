@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
                 if self.game.board[i][j] == 1:
                     btn.setStyleSheet(f"background-color: {self.selected_color}")
                     if self.game.selected and self.game.selected == (i, j):
-                        btn.setStyleSheet("background-color: grey")  # Измените цвет выделенной шашки
+                        btn.setStyleSheet("background-color: grey")
                 btn.clicked.connect(lambda _, x=i, y=j: self.make_move(x, y))
                 self.grid_layout.addWidget(btn, i, j)
                 btn.setFixedSize(50, 50)
@@ -89,10 +89,10 @@ class MainWindow(QMainWindow):
             if self.game.is_valid_move(x1, y1, row, col):
                 self.game.move(x1, y1, row, col)
                 if self.game.check_win():
-                    QMessageBox.information(self, 'Waggle Game', 'You won!')
-                self.game.selected = (row, col)  # Обновляем выделенную шашку
+                    QMessageBox.information(self, 'Waggle Game', 'Ты победил!')
+                self.game.selected = (row, col)
             else:
-                self.game.selected = None  # Сбрасываем выделение, если ход некорректен
+                self.game.selected = None
         else:
             if self.game.board[row][col] == 1:
                 self.game.selected = (row, col)
