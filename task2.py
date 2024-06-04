@@ -18,7 +18,7 @@ def get_file_matrix(file_name):
     return matrix
 
 
-def write_matrix_to_file(file_name, matrix : list):
+def write_matrix_to_file(file_name, matrix: list):
     if type(matrix) is not list:
         print("В метод write_matrix пришла не матрица")
         return
@@ -30,17 +30,17 @@ def write_matrix_to_file(file_name, matrix : list):
     file.close()
 
 
-def set_flags_for_matrix(matrix : list):
+def set_flags_for_matrix(matrix: list):
     for row in matrix:
         row.append(check_row_for_sequence(row))
 
 
-def delete_flags_from_matrix(matrix : list):
+def delete_flags_from_matrix(matrix: list):
     for row in matrix:
         row.pop()
 
 
-def check_row_for_sequence(row : list):
+def check_row_for_sequence(row: list):
     if type(row) is list:
         flag = True
         for i in range(1, len(row)):
@@ -50,7 +50,7 @@ def check_row_for_sequence(row : list):
         return flag
 
 
-def sort_matrix(matrix : list):
+def sort_matrix(matrix: list):
     if type(matrix) is not list:
         print("В метод sort_matrix пришла не матрица")
         return
@@ -62,6 +62,6 @@ def sort_matrix(matrix : list):
     delete_flags_from_matrix(matrix)
 
 
-matrix = get_file_matrix("task2_test_0")
+matrix = get_file_matrix("task2_test_1")
 sort_matrix(matrix)
 write_matrix_to_file("new_file", matrix)

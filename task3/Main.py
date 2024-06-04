@@ -1,5 +1,10 @@
-# Предположим, что данные о кругах загружены из файла в таком же формате:
-
+#Задача 6, только применительно к набору окружностей (кругов).
+#Для набора прямоугольников, стороны которых параллельны OX и OY,
+# заданных координатами 2-х диагональных вершин,
+# найти прямоугольник, внутри которого расположено максимальное кол-во других прямоугольников
+# граница вложенного прямоугольника может проходить по границе внешнего прямоугольника).
+# В случае существования нескольких подходящих прямоугольников – выбрать максимальной площади
+# (если и таких будет несколько – то произвольный).
 from math import pi, sqrt
 
 from task3.Circle import Circle
@@ -26,6 +31,10 @@ def read_circles_from_file(file_path):
                 x, y, radius = map(float, parts)
                 circles.append(Circle(x, y, radius))
     return circles
+
+def write_to_file(file_path, str):
+    with open(file_path, 'w') as file:
+        file.write(str)
 
 
 circles = read_circles_from_file("test_input_1")
@@ -54,5 +63,5 @@ for i in candidates:
     if area > max_area:
         max_area = area
         best_circle_index = i
-
+write_to_file("output1", "index: " + str(best_circle_index) + ", center: " + str(circles[best_circle_index].center) + ", radius: " + str(circles[best_circle_index].radius) + ", area: " + str(max_area))
 print(best_circle_index, circles[best_circle_index].center, circles[best_circle_index].radius, max_area)

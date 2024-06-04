@@ -1,3 +1,6 @@
+# Написать функцию представления числа (до миллиона включительно) в виде строки,
+# например 217045 –> "Двести семнадцать тысяч сорок пять".
+
 def number_to_words(num):
     units = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять']
     units_2 = ['', 'одна', 'две', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять']
@@ -52,6 +55,16 @@ def number_to_words(num):
 
     return result.strip()
 
+def read_int_from_file(file_path):
+    with open(file_path, 'r') as file:
+        str = file.read()
+    return int(str)
+def write_to_file(file_path, str):
+    with open(file_path, 'w') as file:
+        file.write(str)
+
+write_to_file("task4/output", number_to_words(read_int_from_file("task4/input")))
+
 
 # Пример использования
 print(number_to_words(217045))  # двести семнадцать тысяч сорок пять
@@ -68,6 +81,4 @@ print(number_to_words(44444))  # сорок четыре тысячи четыр
 print(number_to_words(10001))  # десять тысяч  один
 print(number_to_words(194555))  # сто девяносто четыре тысячи пятьсот пятьдесят пять
 print(number_to_words(10101))  # десять тысяч сто  один
-
-# for i in range(1000000):
-#     print(number_to_words(i))
+print(number_to_words(909011))  # девятьсот  девять тысяч одиннадцать
